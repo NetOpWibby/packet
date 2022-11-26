@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "/dep.ts";
+import { Buffer } from "std/node/internal/buffer.mjs";
 
 
 
