@@ -1,15 +1,9 @@
 
 
 
-/// import
-
-import { DEFAULT } from "./src/default.ts";
-
-
-
 /// export
 
-export default new DEFAULT();
+export { DEFAULT } from "./src/default.ts";
 
 export { Answer } from "./src/answer.ts";
 export { Name } from "./src/name.ts";
