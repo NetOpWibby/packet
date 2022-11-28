@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "std/node/internal/buffer.mjs";
+import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
 
 /// util
 
