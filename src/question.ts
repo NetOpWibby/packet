@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -20,13 +20,13 @@ export class Question {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const name = new Name();
     const oldOffset = offset;
-    const q: { [key: string]: any; } = {};
+    const q: { [key: string]: unknown; } = {};
 
     q.name = name.decode(buf, offset);
     offset += name.decodeBytes;
@@ -35,16 +35,16 @@ export class Question {
     q.class = classes.toString(buf.readUInt16BE(offset));
     offset += 2;
 
-    const qu = !!(q.class & QU_MASK);
+    const qu = !!(Number(q.class) & QU_MASK);
 
-    if (qu)
-      q.class &= NOT_QU_MASK;
+    if (qu) // `q.class &= NOT_QU_MASK` is equivalent to `q.class = q.class & NOT_QU_MASK`.
+      q.class = Number(q.class) & NOT_QU_MASK;
 
     this.decodeBytes = offset - oldOffset;
     return q;
   }
 
-  encode(q, buf, offset) {
+  encode(q, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(q));
 

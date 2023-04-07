@@ -245,9 +245,7 @@ export function encode(ip, buff, offset?) {
 }
 
 export function familyOf(string) {
-  return sizeOf(string) === v4.size ?
-    1 :
-    2;
+  return sizeOf(string) === v4.size ? 1 : 2;
 }
 
 export function sizeOf(ip) {

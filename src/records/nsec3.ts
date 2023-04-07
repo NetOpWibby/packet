@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -17,13 +17,13 @@ export class NSEC3 {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const length = buf.readUInt16BE(offset);
     const oldOffset = offset;
-    const record: { [key: string]: any; } = {};
+    const record: { [key: string]: unknown; } = {};
     const typebitmap = new TypeBitmap();
 
     offset += 2;
@@ -50,7 +50,7 @@ export class NSEC3 {
     return record;
   }
 
-  encode(record, buf, offset) {
+  encode(record, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(record));
 
@@ -88,6 +88,10 @@ export class NSEC3 {
     offset += typebitmap.encodeBytes;
 
     this.decodeBytes = offset - oldOffset;
+
+    // if (this.encodeBytes - 2 < 0 || > 65535)
+    //   throw new Error("value is out of range");
+
     buf.writeUInt16BE(this.encodeBytes - 2, oldOffset);
     return buf;
   }

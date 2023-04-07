@@ -15,7 +15,7 @@ export class Header {
   decodeBytes = 12;
   encodeBytes = 12;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
@@ -47,7 +47,7 @@ export class Header {
     }
   }
 
-  encode(h, buf, offset) {
+  encode(h, buf?, offset?) {
     if (!buf)
       buf = this.encodingLength();
 

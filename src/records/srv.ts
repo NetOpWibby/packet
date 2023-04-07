@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -17,24 +17,24 @@ export class SRV {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
-    const data: { [key: string]: any; } = {};
+    const data: { [key: string]: unknown; } = {};
     const len = buf.readUInt16BE(offset);
     const name = new Name();
 
-    data.priority = buf.readUInt16BE(offset + 2);
-    data.weight = buf.readUInt16BE(offset + 4);
     data.port = buf.readUInt16BE(offset + 6);
+    data.priority = buf.readUInt16BE(offset + 2);
     data.target = name.decode(buf, offset + 8);
+    data.weight = buf.readUInt16BE(offset + 4);
 
     this.decodeBytes = len + 2;
     return data;
   }
 
-  encode(data, buf, offset) {
+  encode(data, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(data));
 

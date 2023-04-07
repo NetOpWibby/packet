@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -18,11 +18,11 @@ export class OPTION {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
-    const option: { [key: string]: any; } = {};
+    const option: { [key: string]: unknown; } = {};
     option.code = buf.readUInt16BE(offset);
     option.type = optioncodes.toString(option.code);
     offset += 2;
@@ -62,7 +62,7 @@ export class OPTION {
         option.tags = [];
 
         for (let i = 0; i < len; i += 2) {
-          option.tags.push(buf.readUInt16BE(offset));
+          (option.tags as unknown[]).push(buf.readUInt16BE(offset));
           offset += 2;
         }
       }
@@ -74,7 +74,7 @@ export class OPTION {
     return option;
   }
 
-  encode(option, buf, offset) {
+  encode(option, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(option));
 

@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -18,31 +18,31 @@ export class CAA {
   encodeBytes = 0;
   ISSUER_CRITICAL = 1 << 7;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const len = buf.readUInt16BE(offset);
     offset += 2;
 
-    const data: { [key: string]: any; } = {};
+    const data: { [key: string]: unknown; } = {};
     const oldOffset = offset;
-    const sstring = new String();
+    const string = new String();
 
     data.flags = buf.readUInt8(offset);
     offset += 1;
-    data.tag = sstring.decode(buf, offset);
-    offset += sstring.decodeBytes;
+    data.tag = string.decode(buf, offset);
+    offset += string.decodeBytes;
     data.value = buf.toString("utf-8", offset, oldOffset + len);
-    data.issuerCritical = !!(data.flags & this.ISSUER_CRITICAL);
+    data.issuerCritical = !!(Number(data.flags) & this.ISSUER_CRITICAL);
     this.decodeBytes = len + 2;
 
     return data;
   }
 
-  encode(data, buf, offset) {
+  encode(data, buf?, offset?) {
     const len = this.encodingLength(data);
-    const sstring = new String();
+    const string = new String();
 
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(data));
@@ -57,8 +57,8 @@ export class CAA {
     offset += 2;
     buf.writeUInt8(data.flags || 0, offset);
     offset += 1;
-    sstring.encode(data.tag, buf, offset);
-    offset += sstring.encodeBytes;
+    string.encode(data.tag, buf, offset);
+    offset += string.encodeBytes;
     buf.write(data.value, offset);
     offset += Buffer.byteLength(data.value);
     this.encodeBytes = len;
@@ -67,10 +67,10 @@ export class CAA {
   }
 
   encodingLength(data) {
-    const sstring = new String();
+    const string = new String();
 
-    return sstring.encodingLength(data.tag) +
-      sstring.encodingLength(data.value) +
+    return string.encodingLength(data.tag) +
+      string.encodingLength(data.value) +
       2;
   }
 }

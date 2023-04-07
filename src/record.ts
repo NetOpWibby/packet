@@ -10,6 +10,7 @@ import { DNSKEY } from "./records/dnskey.ts";
 import { DS } from "./records/ds.ts";
 import { HINFO } from "./records/hinfo.ts";
 import { MX } from "./records/mx.ts";
+import { NAPTR } from "./records/naptr.ts";
 import { NS } from "./records/ns.ts";
 import { NSEC } from "./records/nsec.ts";
 import { NSEC3 } from "./records/nsec3.ts";
@@ -55,6 +56,9 @@ export function Record(type) {
 
     case "MX":
       return new MX();
+
+    case "NAPTR":
+      return new NAPTR();
 
     case "NS":
       return new NS();

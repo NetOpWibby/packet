@@ -19,6 +19,7 @@ export { DS } from "./src/records/ds.ts";
 export { PTR as CNAME } from "./src/records/ptr.ts";
 export { PTR as DNAME } from "./src/records/ptr.ts";
 export { HINFO } from "./src/records/hinfo.ts";
+export { NAPTR } from "./src/records/naptr.ts";
 export { MX } from "./src/records/mx.ts";
 export { NS } from "./src/records/ns.ts";
 export { NSEC } from "./src/records/nsec.ts";

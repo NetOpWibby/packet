@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -22,10 +22,11 @@ export class Answer {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
-    if (!offset) offset = 0;
+  decode(buf, offset?) {
+    if (!offset)
+      offset = 0;
 
-    const a: { [key: string]: any; } = {};
+    const a: { [key: string]: unknown; } = {};
     const name = new Name();
     const oldOffset = offset;
     const opt = new OPT();
@@ -39,7 +40,7 @@ export class Answer {
       a.extendedRcode = buf.readUInt8(offset + 4);
       a.ednsVersion = buf.readUInt8(offset + 5);
       a.flags = buf.readUInt16BE(offset + 6);
-      a.flag_do = ((a.flags >> 15) & 0x1) === 1;
+      a.flag_do = ((Number(a.flags) >> 15) & 0x1) === 1;
       a.options = opt.decode(buf, offset + 8);
       offset += 8 + opt.decodeBytes;
     } else {
@@ -59,7 +60,7 @@ export class Answer {
     return a;
   }
 
-  encode(a, buf, offset) {
+  encode(a, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(a));
 

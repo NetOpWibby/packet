@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 
 
@@ -16,12 +16,12 @@ export class DNSKEY {
   SECURE_ENTRYPOINT = 0x8000;
   ZONE_KEY = 0x80;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const oldOffset = offset;
-    const key: { [key: string]: any; } = {};
+    const key: { [key: string]: unknown; } = {};
     const length = buf.readUInt16BE(offset);
 
     offset += 2;
@@ -35,13 +35,13 @@ export class DNSKEY {
     key.algorithm = buf.readUInt8(offset);
     offset += 1;
     key.key = buf.slice(offset, oldOffset + length + 2);
-    offset += key.key.length;
+    offset += (key.key as Buffer).length;
     this.decodeBytes = offset - oldOffset;
 
     return key;
   }
 
-  encode(key, buf, offset) {
+  encode(key, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(key));
 

@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -17,11 +17,11 @@ export class RP {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
-    const data: { [key: string]: any; } = {};
+    const data: { [key: string]: unknown; } = {};
     const name = new Name();
     const oldOffset = offset;
 
@@ -35,7 +35,7 @@ export class RP {
     return data;
   }
 
-  encode(data, buf, offset) {
+  encode(data, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(data));
 

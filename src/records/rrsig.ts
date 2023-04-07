@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -18,14 +18,14 @@ export class RRSIG {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const oldOffset = offset;
     const length = buf.readUInt16BE(offset);
     const name = new Name();
-    const sig: { [key: string]: any; } = {};
+    const sig: { [key: string]: unknown; } = {};
 
     offset += 2;
     sig.typeCovered = types.toString(buf.readUInt16BE(offset));
@@ -45,13 +45,13 @@ export class RRSIG {
     sig.signersName = name.decode(buf, offset);
     offset += name.decodeBytes;
     sig.signature = buf.slice(offset, oldOffset + length + 2);
-    offset += sig.signature.length;
+    offset += (sig.signature as Buffer).length;
     this.decodeBytes = offset - oldOffset;
 
     return sig;
   }
 
-  encode(sig, buf, offset) {
+  encode(sig, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(sig));
 

@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -17,12 +17,15 @@ export class TypeBitmap {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset, length) {
+  decode(buf, offset?, length?) {
     if (!offset)
       offset = 0;
 
+    if (!length)
+      length = 0;
+
     const oldOffset = offset;
-    const typelist = [];
+    const typelist: Array<string> = [];
 
     while (offset - oldOffset < length) {
       const window = buf.readUInt8(offset);
@@ -36,7 +39,6 @@ export class TypeBitmap {
         for (let j = 0; j < 8; j++) {
           if (b & (1 << (7 - j))) {
             const typeid = types.toString((window << 8) | (i << 3) | j);
-            // @ts-ignore | TS2345 [ERROR]: Argument of type "string" is not assignable to parameter of type "never".
             typelist.push(typeid);
           }
         }
@@ -49,7 +51,7 @@ export class TypeBitmap {
     return typelist;
   }
 
-  encode(typelist, buf, offset) {
+  encode(typelist, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(typelist));
 
@@ -57,7 +59,7 @@ export class TypeBitmap {
       offset = 0;
 
     const oldOffset = offset;
-    const typesByWindow: Array<{ [key: string]: any; }> = [];
+    const typesByWindow: unknown[] = [];
     let i;
 
     for (i = 0; i < typelist.length; i++) {
@@ -66,12 +68,12 @@ export class TypeBitmap {
       if (typesByWindow[typeid >> 8] === undefined)
         typesByWindow[typeid >> 8] = [];
 
-      typesByWindow[typeid >> 8][(typeid >> 3) & 0x1F] |= 1 << (7 - (typeid & 0x7));
+      (typesByWindow[typeid >> 8] as number[])[(typeid >> 3) & 0x1F] |= 1 << (7 - (typeid & 0x7));
     }
 
     for (i = 0; i < typesByWindow.length; i++) {
       if (typesByWindow[i] !== undefined) {
-        const windowBuf = Buffer.from(typesByWindow[i]);
+        const windowBuf = Buffer.from((typesByWindow[i] as number[]));
 
         buf.writeUInt8(i, offset);
         offset += 1;

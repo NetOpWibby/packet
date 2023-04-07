@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -18,14 +18,14 @@ export class NSEC {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const length = buf.readUInt16BE(offset);
     const name = new Name();
     const oldOffset = offset;
-    const record: { [key: string]: any; } = {};
+    const record: { [key: string]: unknown; } = {};
     const typebitmap = new TypeBitmap();
 
     offset += 2;
@@ -38,7 +38,7 @@ export class NSEC {
     return record;
   }
 
-  encode(record, buf, offset) {
+  encode(record, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(record));
 

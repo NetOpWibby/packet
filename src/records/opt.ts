@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 /// util
 
@@ -18,13 +18,13 @@ export class OPT {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const oldOffset = offset;
     const option = new OPTION();
-    const options: Array<{ [key: string]: any; }> = [];
+    const options: Array<{ [key: string]: unknown; }> = [];
     let o = 0;
     let rdlen = buf.readUInt16BE(offset);
 
@@ -40,7 +40,7 @@ export class OPT {
     return options;
   }
 
-  encode(options, buf, offset) {
+  encode(options, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(options));
 

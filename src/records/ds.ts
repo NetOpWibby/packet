@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 
 
@@ -13,11 +13,11 @@ export class DS {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
-    const digest: { [key: string]: any; } = {};
+    const digest: { [key: string]: unknown; } = {};
     const length = buf.readUInt16BE(offset);
     const oldOffset = offset;
 
@@ -29,13 +29,13 @@ export class DS {
     digest.digestType = buf.readUInt8(offset);
     offset += 1;
     digest.digest = buf.slice(offset, oldOffset + length + 2);
-    offset += digest.digest.length;
+    offset += (digest.digest as Buffer).length;
 
     this.decodeBytes = offset - oldOffset;
     return digest;
   }
 
-  encode(digest, buf, offset) {
+  encode(digest, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(digest));
 

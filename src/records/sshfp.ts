@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 
 
@@ -13,12 +13,12 @@ export class SSHFP {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
     const oldOffset = offset;
-    const record: { [key: string]: any; } = {};
+    const record: { [key: string]: unknown; } = {};
 
     offset += 2; // Account for the RDLENGTH field
     record.algorithm = buf[offset];
@@ -35,7 +35,7 @@ export class SSHFP {
     return record;
   }
 
-  encode(record, buf, offset) {
+  encode(record, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(record));
 

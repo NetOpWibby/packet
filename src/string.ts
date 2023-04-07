@@ -3,7 +3,7 @@
 
 /// import
 
-import { Buffer } from "https://deno.land/std@0.166.0/node/internal/buffer.mjs";
+import { Buffer } from "node:buffer";
 
 
 
@@ -13,7 +13,7 @@ export class String {
   decodeBytes = 0;
   encodeBytes = 0;
 
-  decode(buf, offset) {
+  decode(buf, offset?) {
     if (!offset)
       offset = 0;
 
@@ -24,7 +24,7 @@ export class String {
     return s;
   }
 
-  encode(s, buf, offset) {
+  encode(s, buf?, offset?) {
     if (!buf)
       buf = Buffer.alloc(this.encodingLength(s));
 
