@@ -19,3 +19,11 @@ High-level changes:
   - utility functions are in their own folder as well
 - record functions are now classes so they must be instantiated with `new`
 - replaced `decode.bytes` and `encode.bytes` with `decodeBytes`and `encodeBytes` respectively
+
+
+
+## Test
+
+```sh
+deno test
+```

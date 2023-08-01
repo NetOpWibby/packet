@@ -48,6 +48,14 @@ export class DEFAULT {
   encode(result, buf?, offset?) {
     const allocing = !buf;
 
+    /// saving buffers in our nameserver database is annoying, so we store them as strings…
+    /// `packet` expects buffers, so let's convert 'em real quick
+
+    result.answers && result.answers.map(answer => {
+      answer = processBuffer(answer);
+      return answer;
+    });
+
     if (allocing)
       buf = Buffer.alloc(this.encodingLength(result));
 
@@ -98,5 +106,64 @@ export class DEFAULT {
       encodingLengthList(result.answers || [], answer) +
       encodingLengthList(result.authorities || [], answer) +
       encodingLengthList(result.additionals || [], answer);
+  }
+}
+
+
+
+/// helper
+
+function processBuffer(rr) {
+  if (!rr.type)
+    return rr;
+
+  switch(rr.type) {
+    case "DNSKEY": {
+      if (typeof rr.data.key === "string")
+        rr.data.key = new Buffer(rr.data.key);
+
+      return rr;
+    }
+
+    case "DS": {
+      if (typeof rr.data.digest === "string")
+        rr.data.digest = new Buffer(rr.data.digest);
+
+      return rr;
+    }
+
+    case "NSEC3": {
+      if (typeof rr.data.nextDomain === "string")
+        rr.data.nextDomain = new Buffer(rr.data.nextDomain);
+
+      if (typeof rr.data.salt === "string")
+        rr.data.salt = new Buffer(rr.data.salt);
+
+      return rr;
+    }
+
+    case "NULL": {
+      if (typeof rr.data === "string")
+        rr.data = new Buffer(rr.data);
+
+      return rr;
+    }
+
+    case "RRSIG": {
+      if (typeof rr.data.signature === "string")
+        rr.data.signature = new Buffer(rr.data.signature);
+
+      return rr;
+    }
+
+    case "TXT": {
+      if (typeof rr.data === "string")
+        rr.data = new Buffer(rr.data);
+
+      return rr;
+    }
+
+    default:
+      return rr;
   }
 }
