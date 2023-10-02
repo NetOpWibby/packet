@@ -89,7 +89,13 @@ export class NSEC3 {
 
     this.decodeBytes = offset - oldOffset;
 
-    // if (this.encodeBytes - 2 < 0 || > 65535)
+    /// NOTE
+    /// : commented-out because we don't want blocking errors
+    ///   : error bubbles up to nameserver anyway
+
+    // const encodedValue = this.encodeBytes - 2;
+
+    // if (encodedValue < 0 || encodedValue > 65535)
     //   throw new Error("value is out of range");
 
     buf.writeUInt16BE(this.encodeBytes - 2, oldOffset);

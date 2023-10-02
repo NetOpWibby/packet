@@ -156,12 +156,19 @@ function processBuffer(rr) {
       return rr;
     }
 
-    case "TXT": {
-      if (typeof rr.data === "string")
-        rr.data = new Buffer(rr.data);
+    case "TLSA": {
+      if (typeof rr.data.certificate === "string")
+        rr.data.certificate = new Buffer(rr.data.certificate);
 
       return rr;
     }
+
+    // case "TXT": {
+    //   if (typeof rr.data === "string")
+    //     rr.data = new Buffer(rr.data);
+
+    //   return rr;
+    // }
 
     default:
       return rr;

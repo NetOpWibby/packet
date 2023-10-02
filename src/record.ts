@@ -22,6 +22,7 @@ import { RRSIG } from "./records/rrsig.ts";
 import { SOA } from "./records/soa.ts";
 import { SRV } from "./records/srv.ts";
 import { SSHFP } from "./records/sshfp.ts";
+import { TLSA } from "./records/tlsa.ts";
 import { TXT } from "./records/txt.ts";
 import { UNKNOWN } from "./records/unknown.ts";
 
@@ -89,6 +90,9 @@ export function Record(type) {
 
     case "SRV":
       return new SRV();
+
+    case "TLSA":
+      return new TLSA();
 
     case "TXT":
       return new TXT();

@@ -475,17 +475,17 @@ Deno.test("soa", () => {
   });
 });
 
+Deno.test("srv", () => {
+  testEncoder(new Packet.SRV(), { port: 9999, target: "hello.world.examplename" });
+  testEncoder(new Packet.SRV(), { port: 9999, priority: 42, target: "hello.world.examplename",  weight: 10 });
+});
+
 Deno.test("sshfp", () => {
   testEncoder(new Packet.SSHFP(), {
     algorithm: 1,
     fingerprint: "A108C9F834354D5B37AF988141C9294822F5BC00",
     hash: 1
   });
-});
-
-Deno.test("srv", () => {
-  testEncoder(new Packet.SRV(), { port: 9999, target: "hello.world.examplename" });
-  testEncoder(new Packet.SRV(), { port: 9999, priority: 42, target: "hello.world.examplename",  weight: 10 });
 });
 
 Deno.test("stream", () => {
@@ -516,6 +516,15 @@ Deno.test("stream", () => {
   assertStrictEquals(compare(answer1.type, answer2.type), true, "streamDecoded RR type match");
   assertStrictEquals(compare(answer1.name, answer2.name), true, "streamDecoded RR name match");
   assertStrictEquals(compare(answer1.data, answer2.data), true, "streamDecoded RR rdata match");
+});
+
+Deno.test("tlsa", () => {
+  testEncoder(new Packet.TLSA(), {
+    certificate: Buffer.from([0, 1, 2, 3, 4, 5]),
+    matchingType: 1,
+    selector: 1,
+    usage: 3
+  });
 });
 
 Deno.test("txt", () => {

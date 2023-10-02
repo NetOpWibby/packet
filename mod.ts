@@ -33,6 +33,7 @@ export { RRSIG } from "./src/records/rrsig.ts";
 export { SSHFP } from "./src/records/sshfp.ts";
 export { SOA } from "./src/records/soa.ts";
 export { SRV } from "./src/records/srv.ts";
+export { TLSA } from "./src/records/tlsa.ts";
 export { TXT } from "./src/records/txt.ts";
 export { UNKNOWN } from "./src/records/unknown.ts";
 
