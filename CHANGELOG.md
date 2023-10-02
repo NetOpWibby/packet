@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2023.10.02
+
+- adds TLSA support
+- organization and comments
+
+
+
 ## 2023.07.31
 
 - updates Deno's `std` library
