@@ -3,7 +3,7 @@
 
 /// import
 
-import { assertEquals, assertStrictEquals, assertThrows } from "https://deno.land/std@0.196.0/testing/asserts.ts";
+import { assertEquals, assertStrictEquals, assertThrows } from "https://deno.land/std@0.206.0/testing/asserts.ts";
 import { Buffer } from "node:buffer";
 import * as Packet from "./mod.ts";
 
@@ -162,39 +162,35 @@ Deno.test("ns", () => {
 Deno.test("nsec", () => {
   const packet = new Packet.NSEC();
 
-  // `rrtypes` has an issue with being alphabetical...
-  // testEncoder(packet, {
-  //   nextDomain: "foo.examplename",
-  //   rrtypes: ["A", "CAA", "DLV", "DNSKEY"]
-  // });
-
   testEncoder(packet, {
     nextDomain: "foo.examplename",
-    rrtypes: ["TXT"] // 16
+    rrtypes: ["A", "CAA", "DLV", "DNSKEY"]
   });
 
   testEncoder(packet, {
     nextDomain: "foo.examplename",
-    rrtypes: ["TKEY"] // 249
+    rrtypes: ["TXT"]
   });
 
-  // `rrtypes` has an issue with being alphabetical...
-  // testEncoder(packet, {
-  //   nextDomain: "foo.examplename",
-  //   rrtypes: ["NSEC", "RRSIG"]
-  // });
+  testEncoder(packet, {
+    nextDomain: "foo.examplename",
+    rrtypes: ["TKEY"]
+  });
 
-  // `rrtypes` has an issue with being alphabetical...
-  // testEncoder(packet, {
-  //   nextDomain: "foo.examplename",
-  //   rrtypes: ["RRSIG", "TXT"]
-  // });
+  testEncoder(packet, {
+    nextDomain: "foo.examplename",
+    rrtypes: ["NSEC", "RRSIG"]
+  });
 
-  // `rrtypes` has an issue with being alphabetical...
-  // testEncoder(packet, {
-  //   nextDomain: "foo.examplename",
-  //   rrtypes: ["NSEC", "TXT"]
-  // });
+  testEncoder(packet, {
+    nextDomain: "foo.examplename",
+    rrtypes: ["RRSIG", "TXT"]
+  });
+
+  testEncoder(packet, {
+    nextDomain: "foo.examplename",
+    rrtypes: ["NSEC", "TXT"]
+  });
 
   // Test with sample NSEC from below `assertEquals`
   // ex: packet.encode(<content>).toString("hex")
@@ -207,7 +203,7 @@ Deno.test("nsec", () => {
 
   assertStrictEquals(compare(decoded, {
     nextDomain: "host.examplename",
-    rrtypes: ["A", "MX", "RRSIG", "NSEC", "UNKNOWN_1234"]
+    rrtypes: ["A", "MX", "NSEC", "RRSIG", "UNKNOWN_1234"]
   }), true);
 
   const reencoded = packet.encode(decoded);
@@ -605,7 +601,7 @@ Deno.test("nsec3", () => {
     algorithm: 1,
     flags: 0,
     iterations: 257,
-    nextDomain: Buffer.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1]),
+    nextDomain: Buffer.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]),
     rrtypes: ["A", "CAA", "DLV", "DNSKEY"],
     salt: Buffer.from([42, 42, 42])
   });
@@ -614,7 +610,17 @@ Deno.test("nsec3", () => {
 
 /*
 Deno.test("opt", () => {
-  const packet = new Packet.DEFAULT();
+  interface OptionAnswer {
+    extendedRcode?: number;
+    flag_do?: number;
+    flags?: number;
+    name: string;
+    options?: Array<{ [key: string]: unknown; }>;
+    type: string;
+    udpPayloadSize: number;
+  };
+
+  const packet = new Packet.Answer();
 
   const val = {
     additionals: [{
@@ -633,8 +639,8 @@ Deno.test("opt", () => {
 
   let buf = packet.encode(val);
   let val2 = packet.decode(buf);
-  const additional1 = val.additionals[0];
-  let additional2 = val2.additionals[0];
+  const additional1: OptionAnswer = val.additionals[0];
+  let additional2: OptionAnswer = val2.additionals[0];
 
   assertEquals(compare(additional1.name, additional2.name), true, "name matches");
   assertEquals(compare(additional1.udpPayloadSize, additional2.udpPayloadSize), true, "udp payload size matches");
@@ -668,7 +674,7 @@ Deno.test("opt", () => {
 
   buf = packet.encode(val);
   val2 = packet.decode(buf);
-  additional2 = val2.additionals[0];
+  additional2 = (val2.additionals[0] as OptionAnswer);
 
   assertEquals(compare(1 << 15, additional2.flags), true, "DO bit set in flags");
   assertEquals(compare(true, additional2.flag_do), true, "DO bit set");
@@ -722,11 +728,9 @@ function testEncoder(record, val1) {
   const val3 = record.decode(buf2);
 
   assertStrictEquals(buf2.length, record.encodeBytes, "encodeBytes was set correctly on re-encode");
-  // TODO
-  // : these tests fail
-  // assertStrictEquals(buf2.length, record.encodingLength(val1), "encoding length matches on re-encode");
-  // assertStrictEquals(compare(val1, val3), true, "decoded object match on re-encode");
-  // assertStrictEquals(compare(val2, val3), true, "re-encoded decoded object match on re-encode");
+  assertStrictEquals(buf2.length, record.encodingLength(val1), "encoding length matches on re-encode");
+  assertStrictEquals(compare(val1, val3), true, "decoded object match on re-encode");
+  assertStrictEquals(compare(val2, val3), true, "re-encoded decoded object match on re-encode");
 
   const bigger = Buffer.allocUnsafe(buf2.length + 10);
   const buf3 = record.encode(val1, bigger, 10);

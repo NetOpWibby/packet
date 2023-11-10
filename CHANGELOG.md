@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2023.11.10
+
+- updates Deno's `std` library
+- fixes NSEC test
+- adds alphabetical sorting to NSEC/NSEC3 rrtypes
+- reverts RangeError fix in default.ts…let nameserver handle that
+
+
+
 ## 2023.10.02
 
 - adds TLSA support

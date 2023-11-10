@@ -26,8 +26,7 @@ export class DEFAULT {
   encodeBytes = 0;
 
   decode(buf, offset?) {
-    /// catch range errors
-    if (!offset || offset < 0 || offset > 12)
+    if (!offset)
       offset = 0;
 
     const answer = new Answer();

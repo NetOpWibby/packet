@@ -43,7 +43,7 @@ export class NSEC3 {
     offset += 1;
     record.nextDomain = buf.slice(offset, offset + hashLength);
     offset += hashLength;
-    record.rrtypes = typebitmap.decode(buf, offset, length - (offset - oldOffset));
+    record.rrtypes = typebitmap.decode(buf, offset, length - (offset - oldOffset)).sort();
     offset += typebitmap.decodeBytes;
 
     this.decodeBytes = offset - oldOffset;
@@ -84,7 +84,7 @@ export class NSEC3 {
     offset += 1;
     nextDomain.copy(buf, offset, 0, nextDomain.length);
     offset += nextDomain.length;
-    typebitmap.encode(record.rrtypes, buf, offset);
+    typebitmap.encode(record.rrtypes.sort(), buf, offset);
     offset += typebitmap.encodeBytes;
 
     this.decodeBytes = offset - oldOffset;
@@ -108,6 +108,6 @@ export class NSEC3 {
     return 8 +
       record.salt.length +
       record.nextDomain.length +
-      typebitmap.encodingLength(record.rrtypes);
+      typebitmap.encodingLength(record.rrtypes.sort());
   }
 }
