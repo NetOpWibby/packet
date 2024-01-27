@@ -3,7 +3,7 @@
 
 /// import
 
-import { assertEquals, assertStrictEquals, assertThrows } from "https://deno.land/std@0.206.0/testing/asserts.ts";
+import { assertEquals, assertStrictEquals, assertThrows } from "https://deno.land/std/testing/asserts.ts";
 import { Buffer } from "node:buffer";
 import * as Packet from "./mod.ts";
 
